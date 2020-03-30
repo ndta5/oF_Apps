@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxOpenCv.h"
-#include "ofxDelaunay.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,11 +20,19 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    private:
-        ofImage rgb;
-        ofxCvColorImage colorImage;
-        ofxCvGrayscaleImage grayImage, edgeImage;
-        ofVboMesh mesh;
-        ofxDelaunay delaunay;
-        vector<ofColor> colorVec;
+		ofSoundPlayer         beat;
+        ofSoundPlayer        ow;
+        ofSoundPlayer        dog;
+        ofSoundPlayer        rooster;
+
+
+        // we will bounce a circle using these variables:
+        float px = 300;
+        float py = 300;
+        float vx = 0;
+        float vy = 0;
+        float prevx, prevy;
+
+        static constexpr size_t nBandsToGet = 128;
+        std::array<float, nBandsToGet> fftSmoothed{{0}};
 };

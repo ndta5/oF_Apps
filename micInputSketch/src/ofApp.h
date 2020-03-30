@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxOpenCv.h"
-#include "ofxDelaunay.h"
 
 class ofApp : public ofBaseApp{
 
@@ -22,11 +20,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+        void audioReceived(float *buf, int bufSize, int nChan);
     private:
-        ofImage rgb;
-        ofxCvColorImage colorImage;
-        ofxCvGrayscaleImage grayImage, edgeImage;
-        ofVboMesh mesh;
-        ofxDelaunay delaunay;
-        vector<ofColor> colorVec;
+        float buffer[512];
+        int bufferSize;
+        ofSoundStream sound_stream;
+
 };

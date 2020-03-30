@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxOpenCv.h"
-#include "ofxDelaunay.h"
 
 class ofApp : public ofBaseApp{
 
@@ -10,8 +8,9 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void resetParticles();
 
-		void keyPressed(int key);
+		void keyPressed  (int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
@@ -22,11 +21,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    private:
-        ofImage rgb;
-        ofxCvColorImage colorImage;
-        ofxCvGrayscaleImage grayImage, edgeImage;
-        ofVboMesh mesh;
-        ofxDelaunay delaunay;
-        vector<ofColor> colorVec;
+
+    ofEasyCam cam;
+    // インスタンス生成
+    ofMesh mesh;
+    // メッシュの幅と高さ
+    int w, h;
 };

@@ -2,68 +2,62 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //  load image
-    rgb.load("A310.jpg");
-    grayImage.allocate(1024,683);
-    edgeImage.allocate(1024,683);
-    colorImage = rgb;
-    grayImage = colorImage;
-    grayImage.blur();
-    cvCanny(grayImage.getCvImage(), edgeImage.getCvImage(), 20, 100);
-    unsigned char *edgeData = edgeImage.getPixels().getData();
-    unsigned char *rgbData = rgb.getPixels().getData();
-    
-    for (int i=0; i < 1024*683; i+=5) {
-        if (edgeData[i] == 0) {
-            continue;
-        }
-        else {
-            int coordY = floor(i/1024);
-            mesh.addVertex(ofVec3f(i-1024*coordY, coordY));
-            delaunay.addPoint(ofVec2f(i-1024*coordY, coordY));
-            
-            ofColor color(rgbData[i*3],rgbData[i*3+1],rgbData[i*3+2]);
-            colorVec.push_back(color);
+    // 画面の設定
+    ofBackground(0);
+    ofEnableDepthTest();
+    cam.setDistance(100);
+    // メッシュの幅と高さの初期化
+    w = 100;
+    h = 100;
+    // メッシュの各頂点の色を初期化
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            mesh.addColor(ofFloatColor(0.5, 0.8, 1.0));
         }
     }
+}
 
-    for (int i=0; i<300; i++)
-    {
-        int x = ofRandom(1024);
-        int y = ofRandom(683);
-        ofPoint randomPoint(x, y);
-        delaunay.addPoint(randomPoint);
+//--------------------------------------------------------------
+void ofApp::resetParticles(){
 
-        ofColor color(rgbData[i*3],rgbData[i*3+1],rgbData[i*3+2]);
-        colorVec.push_back(color);
-    }
-
-    delaunay.addPoint(ofPoint(0, 0));
-    delaunay.addPoint(ofPoint(0, 683));
-    delaunay.addPoint(ofPoint(1024, 683));
-    delaunay.addPoint(ofPoint(1024, 0));
-    
-    delaunay.triangulate();
-
-    for (int i = 0; i < colorVec.size(); i++){
-        delaunay.triangleMesh.addColor(colorVec[i]);
-    }
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    // まず、現在の全ての頂点情報を消去(vertices->頂点)
+    mesh.clearVertices();
+    // メッシュの全ての頂点位置を更新、それを頂点情報として追加
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            float x = sin(i * 0.1 + ofGetElapsedTimef()) * 10.0;
+            float y = sin(j * 0.15 + ofGetElapsedTimef()) * 10.0;
+            float z = x + y;
+            mesh.addVertex(ofVec3f(i - w/2, j - h/2, z));
 
+        }
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    glShadeModel(GL_FLAT);
-    delaunay.draw();
+    // メッシュの描画
+     ofSetHexColor(0xffffff);
+     // カメラの開始
+     cam.begin();
+     // 頂点の位置をドットで表示
+     glPointSize(2.0);
+     mesh.drawVertices();
+    // カメラ停止
+     cam.end();
+     // ログの表示
+     string info;
+     info = "vertex num = " + ofToString(w * h, 0) + "\n";
+     info += "FPS = " + ofToString(ofGetFrameRate(), 2) + "\n";
+     ofDrawBitmapString(info, 30, 30);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
 }
 
 //--------------------------------------------------------------
